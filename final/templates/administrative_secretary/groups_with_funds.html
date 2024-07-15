@@ -1,0 +1,105 @@
+{% extends "administrative_secretary/dashboard.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <h4 class="text-sm-center text-dark" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0;">Groups with Funds</h4>
+
+      <!-- Check if no groups found -->
+      {% if no_groups_found %}
+        <p class="text-center">No groups found.</p>
+      {% else %}
+        <!-- Display the table of groups with DataTable integration -->
+        <div class="mb-3" style="overflow-x: auto;">
+          <table id="groupsTable" class="display table table-bordered table-striped text-dark" style="font-size: 0.9rem; width:100%">
+            <thead class="thead-primary border-bottom-success">
+              <tr>
+                <th>Group Name</th>
+                <th>Description</th>
+                <th>Group Account</th>
+                <th>Total Members</th>
+                <th>Group Number</th>
+                <th>Village</th>
+                <th>Amount Received</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for group in page_obj.object_list %}
+              <tr> <!-- Adjust the height of the rows if needed -->
+                <td>{{ group.name }}</td>
+                <td>{{ group.description }}</td>
+                <td>{{ group.group_account }}</td>
+                <td>{{ group.total_members }}</td>
+                <td>{{ group.group_no }}</td>
+                <td>{{ group.village }}</td>
+                <td>
+                  {% with transactions=group.incoming_transactions.all %}
+                    {% if transactions %}
+                      {% for transaction in transactions %}
+                        {{ transaction.amount }} <!-- Display each transaction amount -->
+                      {% endfor %}
+                    {% else %}
+                      0 <!-- Display 0 if no transactions -->
+                    {% endif %}
+                  {% endwith %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Group Name</th>
+                <th>Description</th>
+                <th>Group Account</th>
+                <th>Total Members</th>
+                <th>Group Number</th>
+                <th>Village</th>
+                <th>Amount Received</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="dataTables_info" id="groupsTable_info" role="status" aria-live="polite">
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+          </div>
+          <div class="dataTables_paginate paging_simple_numbers" id="groupsTable_paginate">
+            <!-- Link to the previous page -->
+            {% if page_obj.has_previous %}
+              <a class="paginate_button" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            <!-- Current page information -->
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+            <!-- Link to the next page -->
+            {% if page_obj.has_next %}
+              <a class="paginate_button" href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Include necessary scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/2.0.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('#groupsTable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": false, // Disable default info message
+            "autoWidth": false,
+        });
+    });
+  </script>
+{% endblock %}

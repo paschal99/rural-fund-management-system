@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Group Report</title>
+    <style>
+        /* Define CSS styles for better presentation in PDF */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-left:100px
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> all district groups Report</h1>
+        <!-- Iterate over the groups passed from the context -->
+            <table>
+                <tr>
+                    <th>group name</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Group Number</th>
+                    <th>Village</th>
+                    <th>Total members</th>
+                    <th>group account</th>
+                    
+                </tr>
+                {% for group in groups %}
+                <tr>
+                    <td> {{ group.name }}</td>
+                    <td>{{ group.description }}</td>
+                    <td>{{ group.created_at }}</td>
+                    <td>{{ group.group_no }}</td>
+                    <td>{{ group.village }}</td>
+                    <td> {{group.total_members}}</td>
+                    <td> {{group.group_account}}</td>
+                    
+                </tr>
+                {%endfor%}
+            </table>
+    </div>
+</body>
+</html>

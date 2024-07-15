@@ -1,0 +1,80 @@
+{% extends 'administrative_secretary/dashboard.html' %}
+
+{% block content %}
+<div class="card">
+    <h4 class="mb-4 text-dark justify-content-center  text-sm-center" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0; padding-top:10px">Unreturned Loans</h4>
+    <div class="table-responsive">
+        <a href="{% url 'generate_all_not_returned_loans_pdf'%}" class="btn btn-sm btn-primary" style="margin-left:10px">Generate report in PDF</a>
+        <table class="table table-striped" id="unreturnedLoansTable">
+            <thead class="thead-primary border-bottom-info">
+                <tr>
+                    <th>Group Name</th>
+                    <th>Amount Received</th>
+                    <th>End Date</th>
+                    <th>Required Amount to Return</th>
+                    <th>Penalty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan_schedule in page_obj %}
+                <tr>
+                    <td>{{ loan_schedule.group.name }}</td>
+                    <td>{{ loan_schedule.amount_received }}</td>
+                    <td>{{ loan_schedule.end_date }}</td>
+                    <td>{{ loan_schedule.amount_received }}</td>
+                    <td>{{ loan_schedule.calculate_penalty }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot><tr>
+                <th>Group Name</th>
+                <th>Amount Received</th>
+                <th>End Date</th>
+                <th>Required Amount to Return</th>
+                <th>Penalty</th>
+            </tr>
+        </tfoot>
+        </table>
+    </div>
+    <!-- Pagination Links -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo; First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</div>
+
+<!-- Include necessary scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#unreturnedLoansTable').DataTable({
+            "paging": true,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "searching": true
+        });
+    });
+</script>
+{% endblock %}

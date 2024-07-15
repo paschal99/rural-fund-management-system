@@ -1,0 +1,41 @@
+{% extends 'development_officer/dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Delete Group</h5>
+            <p class="card-text">Are you sure you want to delete <strong>{{ group.name }}</strong>?</p>
+            <form id="deleteForm" action="{% url 'delete_group' group.id %}" method="POST">
+                {% csrf_token %}
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+                    <a href="{% url 'group_search' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include SweetAlert Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        function confirmDelete() {
+            Swal.fire({
+                title: 'Confirm Delete',
+                text: 'Are you sure you want to delete {{ group.name }}?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form
+                    document.getElementById("deleteForm").submit();
+                }
+            });
+        }
+    </script>
+{% endblock %}

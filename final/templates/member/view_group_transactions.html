@@ -1,0 +1,108 @@
+{% extends 'member/member_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h4 class="text-lg-center text-dark" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0;">Transactions for Group: {{ group.name }}</h4>
+
+    <!-- Card for District Transactions -->
+    <div class="card mb-4 border-box-sizing border-bottom-success shadow-box">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="transactionsTable" class="display table table-striped table-bordered text-dark" style="width:100%">
+                    <thead class="thead-info border-bottom-info">
+                        <tr>
+                            <th>Transaction Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>From Account</th>
+                            <th>To Account</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.transaction_type }}</td>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.date_created }}</td>
+                            <td>{{ transaction.from_account.account_name }}</td>
+                            <td>{{ transaction.destination_account.name }}</td>
+                            <td>
+                                <a href="{% url 'refund_fund' transaction.id %}" class="btn btn-md btn-primary">
+                                    Make Refund
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card for Loan Schedule and Penalty Information -->
+    <div class="card shadow-box">
+        <div class="card-header bg-gradient-light text-dark text-lg-center">Loan Schedule</div>
+        <div class="card-body">
+            {% if loan_schedule %}
+            <div class="table-responsive">
+                <table id="loanScheduleTable" class="display table table-striped table-bordered text-dark" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Amount Received</th>
+                            <th>Returned</th>
+                            <th>Penalty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ loan_schedule.start_date }}</td>
+                            <td>{{ loan_schedule.end_date }}</td>
+                            <td>{{ loan_schedule.amount_received }}</td>
+                            <td>{% if loan_schedule.returned %} Yes {% else %} No {% endif %}</td>
+                            <td>{{ penalty }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No loan schedule found for this group.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+
+<style>
+.shadow-box {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    $('#transactionsTable').DataTable({
+        "paging": true,
+        "searching": true,
+        "info": true,
+        "pageLength": 10
+    });
+    $('#loanScheduleTable').DataTable({
+        "paging": false,
+        "searching": false,
+        "info": false
+    });
+});
+
+var modal = document.getElementById("error-modal");
+{% if error_message %}
+    $(modal).modal('show');
+{% endif %}
+</script>
+{% endblock %}

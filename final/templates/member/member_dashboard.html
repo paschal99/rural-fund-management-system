@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{%block title %} Dashboard {% endblock%}</title>
+
+        <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+        <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/sweetalert2.css' %}" rel="stylesheet">
+        <link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet"> 
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
+    <style>
+        /* Card styles */
+       .card-link {
+           text-decoration: none;
+           color: inherit;
+       }
+       
+       {% comment %} .card {
+           background-color: #FFFFFF; /* White background */
+           color: #004085; /* Text and icon color */
+           transition: transform 0.3s ease, box-shadow 0.3s ease;
+       }
+       
+       .card:hover {
+           transform: translateY(-5px);
+           box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+       }
+       
+       /* Brighten on touch or click */
+       .card-touch {
+           transition: filter 0.3s ease;
+       }
+       
+       .card-touch:hover,
+       .card-touch:focus {
+           filter: brightness(115%);
+       }  {% endcomment %}
+       
+       
+   </style>
+</head>
+
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav  sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color:#01222b;">
+
+                    <!-- Sidebar - Brand -->
+                    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'member_dashboard' %}">
+                        {% comment %} <div class="sidebar-brand-icon rotate-n-15">
+                            <i class="fas fa-laugh-wink"></i>
+                        </div> {% endcomment %}
+                       <div class="sidebar-brand-text mx-8">Group-Dashboard</div>
+                    </a>
+
+                    <!-- Divider -->
+                    <hr class="sidebar-divider my-0">
+                    <!-- Nav Item - Dashboard -->
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'member_dashboard' %}">
+                            <i class="fas fa-fw fa-tachometer-alt"></i>
+                            <span>member</span></a>
+                    </li>
+                    <!-- Divider -->
+                    <hr class="sidebar-divider">
+                    <!-- Heading -->
+                    <div class="sidebar-heading">
+                        your group-info
+                    </div>
+
+                    <!-- Nav Item - Pages Collapse Menu -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                            aria-expanded="true" aria-controls="collapseTwo">
+                            <i class="fas fa-fw fa-cog"></i>
+                            <span>group-member</span>
+                        </a>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <h6 class="collapse-header">group-information</h6>
+                                <a class="collapse-item" href="{%url 'view_group_information' %}">view-group info</a>
+                                <a class="collapse-item" href="{% url 'group_members' %}">view-group-member</a>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Nav Item - Utilities Collapse Menu -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                            aria-expanded="true" aria-controls="collapseUtilities">
+                            <i class="fas fa-fw fa-wrench"></i>
+                            <span>make-transaction</span>
+                        </a>
+                        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                            data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <h6 class="collapse-header">make-transaction</h6>
+                                <a class="collapse-item" href="{% url 'view_group_transactions' %}">veiw-allocation</a>
+                                <a class="collapse-item" href="{% url 'qrcode'%}">refund-detail</a>
+
+                            </div>
+                        </div>
+                    </li>
+        <!--            <li class="nav-item">-->
+        <!--                <a class="nav-link" href="#">-->
+        <!--                    <i class="fas fa-fw fa-table"></i>-->
+        <!--                    <span>group-statistics</span></a>-->
+        <!--            </li>-->
+
+                    <!-- Sidebar Toggler (Sidebar) -->
+                    <div class="text-center d-none d-md-inline">
+                        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                    </div>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <div class="heading text-center" style="padding: 20px;">
+                    <h4 class="text-sm" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0;">
+                        Welcome, {{user.username}}-<span style="color: blue;">{{user.profile.role}}</span>
+                    </h4>
+                    </div>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+
+
+                        <!-- Nav Item - Messages -->
+
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{user.username}}</span>
+                                <img class="img-profile rounded-circle"
+                                    src="{% static 'img/undraw_profile.svg' %}">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="{% url 'update_profile'%}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="{% url 'change_password' %}">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    change-password
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout'%}" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+                
+                
+                <div class="container-fluid">
+                    {% block content %}
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    </div>
+                
+                    <!-- Content Row -->
+                        <div class="row">
+                            <!-- Bottom Row Cards -->
+                            <div class="col-xl-6 col-md-6 mb-4">
+                                <a href="#" class="card-link card-touch">
+                                    <div class="card border-0 shadow h-100 py-2 animate-card text-center">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col">
+                                                    <div class="text-xl font-weight-bold text-uppercase mb-1" style="color: #004085;">Total active member</div>
+                                                    <div class="h5 mb-0 font-weight-bold" style="font-size: 24px; color: #004085;">{{ group.total_members }}</div>
+                                                    <i class="fas fa-users fa-2x mt-2" style="color: #004085;"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                    
+                            <div class="col-xl-6 col-md-6 mb-4">
+                                <a href="#" class="card-link card-touch">
+                                    <div class="card border-0 shadow h-100 py-2 animate-card text-center">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col">
+                                                    <div class="text-xl font-weight-bold text-uppercase mb-1" style="color: #004085;">Group balance Amount</div>
+                                                    <div class="h5 mb-0 font-weight-bold" style="font-size: 24px; color: #004085;">{{ group_acount }}</div>
+                                                    <i class="fas fa-dollar-sign fa-2x mt-2" style="color: #004085;"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    <!-- /.row -->
+                
+                    <!-- Remaining Time for Refund and Calendar -->
+                    <div class="row" style="margin-left: 0px; margin-right: 15px">
+                        <div class="col-xl-6 col-lg-6 mb-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background-color:#01222c;">
+                                    <h6 class="m-0 font-weight-bold text-white"> Loan Schedule</h6>
+                                </div>
+                                <div class="card-body text-dark" >
+                                    <div class="container mt-5">
+                                        <h2 class="text-center">Remaining Time for Refund</h2>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered bg-light text-dark">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Days</th>
+                                                        <th>Hours</th>
+                                                        <th>Minutes</th>
+                                                        <th>Seconds</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr id="countdown">
+                                                        {% if remaining_time_details %}
+                                                            <td>{{ remaining_time_details.days }}</td>
+                                                            <td>{{ remaining_time_details.hours }}</td>
+                                                            <td>{{ remaining_time_details.minutes }}</td>
+                                                            <td>{{ remaining_time_details.seconds }}</td>
+                                                        {% else %}
+                                                            <td colspan="4" class="text-center">No remaining time for refund.</td>
+                                                        {% endif %}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                
+                                    <!-- JavaScript for real-time countdown -->
+                                    <script>
+                                        function startCountdown(targetDateIso) {
+                                            const targetDate = new Date(targetDateIso);
+                
+                                            const updateCountdown = () => {
+                                                const now = new Date();
+                                                const timeDifference = targetDate - now;
+                
+                                                if (timeDifference < 0) {
+                                                    document.getElementById("countdown").innerHTML = "<td colspan='4' class='text-center'>Time has expired.</td>";
+                                                    return;
+                                                }
+                
+                                                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                                                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                                                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+                
+                                                const countdownRow = document.getElementById("countdown");
+                                                countdownRow.innerHTML =
+                                                    `<td>${days}</td><td>${hours}</td><td>${minutes}</td><td>${seconds}</td>`;
+                                            };
+                
+                                            setInterval(updateCountdown, 1000); // Update every second
+                                        }
+                
+                                        const endDateIso = "{{ end_date_iso }}"; // ISO formatted end date for JS
+                                        startCountdown(endDateIso); // Start the countdown
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- Calendar Display -->
+                        <div class="col-xl-6 col-lg-6 mb-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"style="background-color:#01222b;">
+                                    <h6 class="m-0 font-weight-bold text-white">Calendar</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="container mt-5">
+                                        <div class="calendar">
+                                            <div class="calendar-header">
+                                                <h3>June 2024</h3>
+                                            </div>
+                                            <div class="calendar-body">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sun</th>
+                                                            <th>Mon</th>
+                                                            <th>Tue</th>
+                                                            <th>Wed</th>
+                                                            <th>Thu</th>
+                                                            <th>Fri</th>
+                                                            <th>Sat</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="calendar-body">
+                                                        <!-- Calendar days will be populated here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                
+                    </div>
+                    <!-- /.row -->
+                    {% endblock %}
+                
+                </div>
+                <!-- /.container-fluid -->
+                
+                
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2024</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="{%url 'logout' %}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert2.js' %}"></script>
+    <script src="{%static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+        });
+    </script>
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+</body>
+
+</html>

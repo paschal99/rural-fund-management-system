@@ -1,0 +1,97 @@
+{% extends 'administrative_secretary/dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="">
+             <h4 class="header-title text-dark text-lg-center" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0;">Group List</h4>
+        </div>
+
+        <!-- Search Form -->
+        <form action="{% if request.path == '/view_groups/' %}{% url 'view_groups' %}{% else %}{% url 'group_list' %}{% endif %}" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search by Group Name">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Group List Table -->
+        <div class="table-responsive">
+            <table class="table table-striped text-dark">
+                <thead class="thead-primary">
+                    <tr>
+                        <th scope="col">Group Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Village</th>
+                        <th scope="col">Group Number</th>
+                        <th scope="col">Total Members</th>
+                        <th scope="col">Constitution</th>  <!-- New Column -->
+                        <th scope="col">View Members</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through groups to display each group -->
+                    {% for group in groups %}
+                    <tr>
+                        <td>{{ group.name }}</td>
+                        <td>{{ group.description }}</td>
+                        <td>{{ group.village.name }}</td>
+                        <td>{{ group.group_no }}</td>
+                        <td>{{ group.total_members }}</td>
+                        <td>
+                            {% if group.constitution %}
+                                <a href="{{ group.constitution.url }}" class="btn btn-primary btn-sm">View Constitution</a>
+                            {% else %}
+                                No Constitution Available
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- Link to view group members -->
+                            <a href="{% url 'member_list' group.id %}" class="btn btn-primary btn-sm">View Members</a>
+                        </td>
+                        <td>
+                            <!-- Link to delete group -->
+                            <a href="{% url 'group_delete' group.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <!-- Total count of groups -->
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="8" class="text-center">Total: {{ groups|length }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Pagination controls -->
+        <div class="pagination justify-content-center">
+            {% if groups.has_previous %}
+<!--                <a href="?page=1" class="btn btn-secondary">&laquo; First</a>-->
+                <a href="?page={{ groups.previous_page_number }}" class="btn btn-secondary">Previous</a>
+            {% else %}
+                <button class="btn btn-primary" disabled>&laquo; First</button>
+<!--                <button class="btn btn-secondary" disabled>Previous</button>-->
+            {% endif %}
+
+            <span class="btn btn-light">
+                Page {{ groups.number }} of {{ groups.paginator.num_pages }}.
+            </span>
+
+            {% if groups.has_next %}
+                <a href="?page={{ groups.next_page_number }}" class="btn btn-secondary">Next</a>
+<!--                <a href="?page={{ groups.paginator.num_pages }}" class="btn btn-secondary">Last &raquo;</a>-->
+            {% else %}
+                <button class="btn btn-primary" disabled>Next</button>
+<!--                <button class="btn btn-secondary" disabled>Last &raquo;</button>-->
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

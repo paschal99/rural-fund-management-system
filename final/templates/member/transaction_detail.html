@@ -1,0 +1,73 @@
+{% extends "member/member_dashboard.html" %}
+
+{% block content %}
+<div class="container mt-5 shadow-box">
+    <!-- Display messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h4 class="mb-4 text-dark text-xl-center" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0; background-color: whitesmoke">Transaction Details</h4>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="transactionDetailsTable" class="display table table-striped table-bordered text-dark" style="width:100%">
+                    <thead>
+                        <tr class="border-bottom-5 border-bottom-success">
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Group</th>
+                            <th scope="col">QR Scanning</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-bottom-5">
+                        <tr class="border-box-sizing">
+                            <td>{{ transaction.id }}</td>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.member.group.name }}</td>
+                            <td><img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Code" class="img-thumbnail" style="width: 70px; height: 70px;"></td>
+                            <td>
+                                <a href="{% url 'download_transaction_slip' transaction.id %}" class="btn btn-primary btn-md">Download Slip</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery, DataTables CSS and JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+
+<style>
+.shadow-box {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    $('#transactionDetailsTable').DataTable({
+        "paging": true,
+        "searching": true,
+        "info": true,
+        "pageLength": 10
+    });
+});
+</script>
+{% endblock %}

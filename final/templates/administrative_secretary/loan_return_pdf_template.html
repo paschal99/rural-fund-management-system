@@ -1,0 +1,56 @@
+<!-- all_loans_returned_pdf.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Returned Loans Report</title>
+    <style>
+        /* Define your styles for the PDF here */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h2>All Returned Loans Report</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Group Name</th>
+                <th>Amount Returned</th>
+                <th>Date Returned</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan_schedule in loan_schedules %}
+            <tr>
+                <td>{{ loan_schedule.group.name }}</td>
+                <td>{{ loan_schedule.amount_received }}</td>
+                <td>{{ loan_schedule.end_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

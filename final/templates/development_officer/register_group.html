@@ -1,0 +1,115 @@
+{% extends 'development_officer/dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Display success/error messages -->
+  {% if messages %}
+    <div class="alert alert-info">
+      <ul class="mb-0">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- Card containing the form to register a new group -->
+  <div class="card">
+    <div class="card-header text-center text-dark" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; margin: 0; background-color: white; color: black;">Register Group</div>
+
+    <div class="card-body" style="padding: 10px;">
+      <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <div class="row mb-2">
+          <!-- Group Name -->
+          <div class="col-md-6">
+            <input type="text" id="name" name="name" class="form-control" placeholder="Group Name" required>
+            <div class="invalid-feedback">Please enter a group name.</div>
+          </div>
+
+          <!-- Group Number -->
+          <div class="col-md-6">
+            <input type="text" id="group" name="group_no" class="form-control" placeholder="Group Number" pattern="[A-Za-z0-9]+" required>
+            <div class="invalid-feedback">Please enter a valid group number.</div>
+          </div>
+        </div>
+        
+        <div class="row mb-2">
+          <!-- Description -->
+          <div class="col-md-6">
+            <textarea id="description" name="description" rows="2" class="form-control" placeholder="Description" required></textarea>
+            <div class="invalid-feedback">Please enter a description.</div>
+          </div>
+
+          <!-- Group Account -->
+          <div class="col-md-6">
+            <input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group Account" required>
+            <div class="invalid-feedback">Please enter a group account.</div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <!-- Total Members -->
+          <div class="col-md-6">
+            <input type="number" id="total_members" name="total_members" class="form-control" placeholder="Total Members" min="1" required>
+            <div class="invalid-feedback">Please enter the total number of members.</div>
+          </div>
+
+          <!-- Village Selection -->
+          <div class="col-md-6">
+            <select id="village" name="village" class="form-select w-100" required>
+              <option value="">-- Select Village --</option>
+              {% for village in villages %}
+                <option value="{{ village.id }}">{{ village.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="invalid-feedback">Please select a village.</div>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <!-- Constitution File Upload -->
+          <div class="col-md-6">
+            <input type="file" id="constitution" name="constitution" class="form-control" accept=".pdf, .doc, .docx" placeholder="Upload Constitution">
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Register Group</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+  .card {
+    margin-bottom: 20px;
+  }
+
+  {% comment %} .needs-validation input,
+  .needs-validation textarea,
+  .needs-validation select {
+    border-radius: 4px;
+  }
+
+  .needs-validation .invalid-feedback {
+    display: block;
+  } {% endcomment %}
+
+  .btn-primary {
+    margin-top: 10px;
+  }
+
+  textarea {
+    resize: none;
+  }
+</style>
+
+{% endblock %}

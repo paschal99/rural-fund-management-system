@@ -1,0 +1,72 @@
+{% extends "administrative_secretary/dashboard.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-light" style="padding-top:10px">
+            <h2 class="mb-1 text-center" style="font-family: Arial, sans-serif; font-size: 20px; color: black; font-weight: bold; margin: 0;">Transfer Money</h2>
+        </div>
+        <div class="card-body">
+            <!-- Display messages using SweetAlert -->
+            {% if messages %}
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        {% for message in messages %}
+                            Swal.fire({
+                                icon: '{{ message.tags }}',
+                                html: '{{ message }}',
+                                confirmButtonText: 'OK'
+                            });
+                        {% endfor %}
+                    });
+                </script>
+            {% endif %}
+
+            <form id="transferForm" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" class="form-control" id="amount" name="amount" required pattern="\d*" title="Please enter only digits" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="from_account">From Account</label>
+                    <select class="form-control" id="from_account" name="from_account" required>
+                        {% for account in district_accounts %}
+                            <option value="{{ account.id }}">{{ account.name }} (Balance: {{ account.balance_amount }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary btn-block" onclick="confirmTransfer()">Transfer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmTransfer() {
+    var amount = document.getElementById("amount").value;
+    Swal.fire({
+        title: 'Confirm Transfer',
+        text: `Are you sure you want to transfer ${amount} to the group {{ group.name }}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, transfer it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            submitTransfer();
+        }
+    });
+}
+
+function submitTransfer() {
+    document.getElementById("transferForm").submit();
+}
+</script>
+{% endblock %}

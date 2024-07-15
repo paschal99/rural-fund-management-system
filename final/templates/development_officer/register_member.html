@@ -1,0 +1,183 @@
+{% extends 'development_officer/dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="content bg-light">
+  <div class="register mt-4 bg-light">
+    <div class="container mt-8" style="box-shadow:10px; padding-top:20px">  <!-- Main container with top margin -->
+      <div class="card shadow-lg">  <!-- Use a card for a clean, contained layout -->
+        <div class="card-header text-center" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0;">  <!-- Centered card header -->
+          <h4 style="background-color:white">Register New Member</h4>  <!-- Title -->
+        </div>
+    
+        <div class="card-body p-4">  <!-- Card body with padding -->
+          <!-- Display success/error messages -->
+          {% if messages %}
+            <div class="alert alert-info text-center">
+              <ul class="mb-0">
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+    
+          <!-- Form to register a new member -->
+          <form method="post" id="registerForm">
+            {% csrf_token %}  <!-- CSRF token for security -->
+    
+            <!-- Username and Password -->
+            <div class="row mb-3">  <!-- Bootstrap row for layout -->
+              <div class="col">
+                {% comment %} <label for="username" class="form-label">Username:</label> {% endcomment %}
+                <input type="text" id="username" name="username" class="form-control" required placeholder="username">  <!-- Form control for consistency -->
+              </div>
+              <div class="col">
+                {% comment %} <label for="first_name" class="form-label">First Name:</label> {% endcomment %}
+                <input type="text" id="first_name" name="first_name" class="form-control" required placeholder="first_name">
+              </div>
+
+            </div>
+    
+            <!-- Other Fields -->
+            <!-- Name, Email, Phone, Sex -->
+            <div class="row mb-3">  <!-- Bootstrap row for layout -->
+              
+              <div class="col">
+                {% comment %} <label for="last_name" class="form-label">Last Name:</label> {% endcomment %}
+                <input type="text" id="last_name" name="last_name" class="form-control" required placeholder="last_name">
+              </div>
+              <div class="col">
+                {% comment %} <label for="email" class="form-label">Email:</label> {% endcomment %}
+                <input type="email" id="email" name="email" class="form-control" placeholder="enter email">
+              </div>
+            </div>
+    
+            <!-- Phone and Sex -->
+            <div class="row mb-3">
+              <div class="col">
+                {% comment %} <label for="phone" class="form-label">Phone:</label> {% endcomment %}
+                <input type="text" id="phone" name="phone" class="form-control" required placeholder="phne-number">
+              </div>
+              <div class="col">
+                {% comment %} <label for="sex" class="form-label">Sex:</label> {% endcomment %}
+                <select id="sex" name="sex" class="form-select" required placeholder="select-sex">  <!-- Dropdown for selecting sex -->
+                  <option value="">-- Select Sex --</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col">
+                <!-- Group and Position -->
+                <div class="mb-3">
+                  {% comment %} <label for="group_id" class="form-label">Select Group:</label> {% endcomment %}
+                  <select id="group_id" name="group_id" class="form-select" required>  <!-- Dropdown for selecting group -->
+                    {% comment %} <option value="">-- Select Group --</option> {% endcomment %}
+                    {% for group in groups %}
+                      <option value="{{ group.id }}">{{ group.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col">
+                <label for="position" class="form-label">Select Position:</label>
+                <select id="position" name="position" class="form-select" required>  <!-- Dropdown for selecting position -->
+                  <option value="">-- Select Position --</option>
+                  <option value="mwenyekiti">Mwenyekiti (Chairperson)</option>
+                  <option value="mtunza_hazina">Mtunza Hazina (Treasurer)</option>
+                  <option value="mwanachama">Mwanachama (Member)</option>
+                </select>
+              </div>
+            </div>
+    
+            <!-- Submit Button -->
+            <div class="text-center">  <!-- Centered button -->
+              <button type="submit" id="registerButton" class="btn btn-primary">Register Member</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include SweetAlert Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- JavaScript Code to Handle Form Submission -->
+<script>
+  // Function to register the member and display SweetAlert
+  function registerMember() {
+    // Form data
+    var formData = new FormData(document.getElementById("registerForm"));
+
+    // Submit the form data via AJAX
+    $.ajax({
+      type: "POST",
+      url: "{% url 'register_member' %}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        // Display success message using SweetAlert
+        if (response.messages) {
+          var messagesHTML = '';
+          response.messages.forEach(function(message) {
+            messagesHTML += '<li>' + message + '</li>';
+          });
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            html: '<ul>' + messagesHTML + '</ul>',
+            showConfirmButton: false,
+            timer: 2000
+          }).then((result) => {
+            // Redirect to the member list page after successful registration
+            window.location.href = response.redirect_url;
+          });
+        } else {
+          // Redirect to the member list page after successful registration
+          window.location.href = response.redirect_url;
+        }
+      },
+      error: function(xhr, status, error) {
+        // Display error message using SweetAlert
+        if (xhr.responseJSON.messages) {
+          var messagesHTML = '';
+          xhr.responseJSON.messages.forEach(function(message) {
+            messagesHTML += '<li>' + message + '</li>';
+          });
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            html: '<ul>' + messagesHTML + '</ul>'
+          });
+        }
+      }
+    });
+  }
+
+  // Event listener for the register button
+  $(document).ready(function() {
+    $("#registerButton").click(function() {
+      // Validate form fields
+      if ($("#username").val() === "" || $("#password").val() === "") {
+        // Display error message using SweetAlert if username or password is empty
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Please fill in all fields'
+        });
+      } else {
+        // Call
+the registerMember() function
+registerMember();
+}
+});
+});
+</script>
+{% endblock %}

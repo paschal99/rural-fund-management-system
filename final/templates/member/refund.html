@@ -1,0 +1,85 @@
+{% extends 'member/member_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4 shadow-box">
+    <div class="bg-gradient-primary text-lg-center text-light">
+        <h2>Refund Fund for Group: {{ group.name }}</h2>
+    </div>
+
+    <!-- Display success or error messages using SweetAlert -->
+    {% if messages %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    title: 'Message',
+                    html: '{% for message in messages %}<p class="{{ message.tags }}" style="font-size: 15px; color: red">{{ message }}</p>{% endfor %}',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    {% endif %}
+
+    <!-- Refund Fund Form -->
+    <form id="refundForm" method="POST">
+        {% csrf_token %}
+
+        <div class="form-group mt-3">
+            <label for="amount">Refund Amount:</label>
+            <input type="number" name="amount" class="form-control" id="amount" required min="0.01" step="0.01" />
+            <div class="invalid-feedback">
+                Please enter a valid refund amount.
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="confirmRefund()">Refund</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Function to validate the form
+    function validateForm() {
+        const amountField = document.getElementById('amount');
+        return amountField.checkValidity();
+    }
+
+    function confirmRefund() {
+        if (validateForm()) {
+            Swal.fire({
+                title: 'Confirm Refund',
+                text: 'Are you sure you want to refund the amount?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, refund it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("refundForm").submit();
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Please enter a valid refund amount.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+</script>
+
+<style>
+.shadow-box {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+</style>
+{% endblock %}

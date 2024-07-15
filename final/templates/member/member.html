@@ -1,0 +1,102 @@
+{% extends 'member/member_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4 border-box-sizing" style="box-shadow: rgba(241,8,8,0.79)">
+    <!-- Display group information or an appropriate message -->
+    <div class="card" style="box-shadow: rgba(241,8,8,0.79)">
+        <div class="card-header text-dark text-sm-center" style="font-family: Arial, sans-serif; font-size: 20px; color: #000; font-weight: bold; margin: 0;">
+            {% if group_name %}
+                <h4>Group: {{ group_name }} Members</h4>
+            {% else %}
+                <h1>No Group Found for the Current User</h1>
+            {% endif %}
+        </div>
+        <!-- Group members table with Bootstrap styling -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="groupMembersTable" class="table table-striped table-bordered text-dark">
+                    <thead class="thead-info border-bottom-primary">
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Sex</th>
+                            <th>Role</th>
+                            <th>Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in group_members %}
+                            <tr>
+                                <td>{{ member.profile.user.get_full_name }}</td>
+                                <td>{{ member.profile.user.username }}</td>
+                                <td>{{ member.profile.user.email }}</td>
+                                <td>{{ member.profile.phone }}</td>
+                                <td>{{ member.profile.sex }}</td>
+                                <td>{{ member.profile.role }}</td>
+                                <td>{{ member.group.name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal structure for error messages -->
+    <div id="message-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Display Django messages if any -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="{% if message.tags %}{{ message.tags }}{% endif %}" style="font-size: 14px">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No messages to display</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Script to initialize DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        $('#groupMembersTable').DataTable({
+            "paging": true,
+            "lengthMenu": [10, 25, 50, 100],
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true
+        });
+
+        // Show the modal if there are messages
+        {% if messages %}
+            $('#message-modal').modal('show');
+        {% endif %}
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'administrative_secretary/dashboard.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-dark">
+            <h4 class="text-center mb-0" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold;">Groups without Funds</h4>
+        </div>
+        <div class="card-body p-0">
+            {% if no_groups_found %}
+                <div class="alert alert-info text-center m-0">
+                    No groups found.
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped text-dark m-0" id="groupsWithoutFundsTable">
+                        <thead class="thead-primary border-bottom-info">
+                            <tr>
+                                <th style="white-space: nowrap;">Group Name</th>
+                                <th style="white-space: nowrap;">Description</th>
+                                <th style="white-space: nowrap;">Created At</th>
+                                <th style="white-space: nowrap;">Group Account</th>
+                                <th style="white-space: nowrap;">Total Members</th>
+                                <th style="white-space: nowrap;">Group Number</th>
+                                <th style="white-space: nowrap;">Village</th>
+                                <th style="white-space: nowrap;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for group in groups_without_funds %}
+                                <tr>
+                                    <td>{{ group.name }}</td>
+                                    <td>{{ group.description }}</td>
+                                    <td>{{ group.created_at }}</td>
+                                    <td>{{ group.group_account }}</td>
+                                    <td>{{ group.total_members }}</td>
+                                    <td>{{ group.group_no }}</td>
+                                    <td>{{ group.village }}</td>
+                                    <td>
+                                        <div class="text-center">
+                                            <a href="{% url 'transfer_money' group.id %}">
+                                                <button class="btn btn-primary btn-sm">Transfer Funds</button>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th style="white-space: nowrap;">Group Name</th>
+                                <th style="white-space: nowrap;">Description</th>
+                                <th style="white-space: nowrap;">Created At</th>
+                                <th style="white-space: nowrap;">Group Account</th>
+                                <th style="white-space: nowrap;">Total Members</th>
+                                <th style="white-space: nowrap;">Group Number</th>
+                                <th style="white-space: nowrap;">Village</th>
+                                <th style="white-space: nowrap;">Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Include necessary scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#groupsWithoutFundsTable').DataTable({
+            "paging": true,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "searching": true
+        });
+    });
+</script>
+
+<style>
+    .card {
+        width: 100%;
+    }
+
+    .table-responsive {
+        width: 100%;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}

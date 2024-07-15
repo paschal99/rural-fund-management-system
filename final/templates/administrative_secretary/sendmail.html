@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>e-mails</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
+    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("O7XxpRpwRTL41Fn3h");//public key
+        })();
+    </script>
+</head>
+<body>
+    <form method="post" action="" class="form-valide">
+        <div class="container border mt-3 bg-ligt">
+            <div class="row" style="background-color: whitesmoke;">
+              
+                <div class="col-md-6 py-3" style="margin-left: 150px;">
+                    <center><h4>Hello Dear!!!!!👋</center>
+                    <h6>Here you are going to send an email notification to staff members</h6><br>
+                    <div class="form-group">
+                        <h5>Name</h5>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <h5>Email</h5>
+                        <input type="email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <h5>Message</h5>
+                        <textarea id="message" rows="3" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <h5>Time</h5>
+                        <input type="date" class="form-control" id="time">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="sendMail()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function sendMail() {
+            let params = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                message: document.getElementById("message").value,
+                time: document.getElementById("time").value,
+            };
+
+            emailjs.send("service_5n6p7ji", "template_rj17fr6", params) //serviveID and templateID respectively
+                .then(function(response) {
+                    alert("Email sent successfully!");
+                }, function(error) {
+                    alert("Failed to send email: " + JSON.stringify(error));
+                });
+        }
+    </script>
+</body>
+</html>
+
+
+</div>

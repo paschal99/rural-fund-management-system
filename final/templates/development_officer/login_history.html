@@ -1,0 +1,37 @@
+{% extends 'development_officer/dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Login History</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Login Time</th>
+                    <th>Logout Time</th>
+                    <th>Status</th>
+                    <th>Activity</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in login_history %}
+                <tr>
+                    <td>{{ entry.id }}</td>
+                    <td>{{ entry.user }}</td>
+                    <td>{{ entry.is_logged_in  }}</td>
+                    <td>{{ entry.user_agent }}</td>
+                    <td>{{ entry.is_login }}</td>
+                    <td>{{ entry.date_time }}</td>
+                    <td>{{ entry.ip }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
